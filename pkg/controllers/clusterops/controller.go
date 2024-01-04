@@ -696,7 +696,7 @@ func (c *Controller) injectCustomAction(clusterOps *clusteroperationv1alpha1.Clu
 		}
 	}
 	defaultMode := int32(0o700)
-	pathPrefix := "/kubespray"
+	pathPrefix := "/captain"
 	if actionType == clusteroperationv1alpha1.ShellActionType {
 		pathPrefix = "/bin"
 	}
