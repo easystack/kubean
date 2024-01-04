@@ -95,17 +95,9 @@ func (ep *EntryPoint) buildPlaybookCmd(action, extraArgs string, isPrivateKey, b
 			return "", ArgsError{fmt.Sprintf("unknown playbook type, the currently supported ranges include: %s", ep.Actions.Playbooks.List)}
 		}
 	}
-	playbookCmd := "ansible-playbook -i /conf/hosts.yml -b --become-user root -e \"@/conf/group_vars.yml\""
-	if isPrivateKey {
-		playbookCmd = fmt.Sprintf("%s --private-key /auth/ssh-privatekey", playbookCmd)
-	}
-	if action == ResetPB {
-		playbookCmd = fmt.Sprintf("%s -e \"reset_confirmation=yes\"", playbookCmd)
-	}
-	if action == RemoveNodePB {
-		playbookCmd = fmt.Sprintf("%s -e \"skip_confirmation=true\"", playbookCmd)
-	}
-	playbookCmd = fmt.Sprintf("%s /kubespray/%s", playbookCmd, action)
+	playbookCmd := "ansible-playbook -i /conf/hosts.yml --extra-vars @/conf/group_vars.yml --flush-cache"
+
+	playbookCmd = fmt.Sprintf("%s %s", playbookCmd, action)
 	if len(extraArgs) > 0 {
 		playbookCmd = fmt.Sprintf("%s %s", playbookCmd, extraArgs)
 	}
