@@ -97,6 +97,16 @@ func (ep *EntryPoint) buildPlaybookCmd(action, extraArgs string, isPrivateKey, b
 	}
 	playbookCmd := "ansible-playbook -i /conf/hosts.yml --extra-vars @/conf/group_vars.yml --flush-cache"
 
+	if isPrivateKey {
+		playbookCmd = fmt.Sprintf("%s --private-key /auth/ssh-privatekey", playbookCmd)
+	}
+	if action == ResetPB {
+		playbookCmd = fmt.Sprintf("%s -e \"reset_confirmation=yes\"", playbookCmd)
+	}
+	if action == RemoveNodePB {
+		playbookCmd = fmt.Sprintf("%s -e \"skip_confirmation=true\"", playbookCmd)
+	}
+
 	playbookCmd = fmt.Sprintf("%s %s", playbookCmd, action)
 	if len(extraArgs) > 0 {
 		playbookCmd = fmt.Sprintf("%s %s", playbookCmd, extraArgs)
