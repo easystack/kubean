@@ -95,7 +95,7 @@ func (ep *EntryPoint) buildPlaybookCmd(action, extraArgs string, isPrivateKey, b
 			return "", ArgsError{fmt.Sprintf("unknown playbook type, the currently supported ranges include: %s", ep.Actions.Playbooks.List)}
 		}
 	}
-	playbookCmd := "ansible-playbook -i /conf/hosts.yml --extra-vars @/conf/group_vars.yml --flush-cache"
+	playbookCmd := "ansible-playbook -i inventory/inventory --extra-vars @/conf/group_vars.yml --flush-cache"
 
 	if isPrivateKey {
 		playbookCmd = fmt.Sprintf("%s --private-key /auth/ssh-privatekey", playbookCmd)

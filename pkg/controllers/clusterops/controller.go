@@ -355,7 +355,7 @@ func (c *Controller) FetchGlobalManifestImageTag() string {
 func (c *Controller) NewKubesprayJob(clusterOps *clusteroperationv1alpha1.ClusterOperation, serviceAccountName string) *batchv1.Job {
 	BackoffLimit := int32(0)
 	DefaultMode := int32(0o700)
-	PrivatekeyMode := int32(0600)
+	PrivatekeyMode := int32(0o600)
 	jobName := c.GenerateJobName(clusterOps)
 	namespace := util.GetCurrentNSOrDefault()
 	job := &batchv1.Job{
@@ -393,8 +393,8 @@ func (c *Controller) NewKubesprayJob(clusterOps *clusteroperationv1alpha1.Cluste
 								},
 								{
 									Name:      "hosts-conf",
-									MountPath: "/conf/hosts.yml",
-									SubPath:   "hosts.yml",
+									MountPath: "/captain/inventory/inventory",
+									SubPath:   "inventory",
 								},
 								{
 									Name:      "vars-conf",
