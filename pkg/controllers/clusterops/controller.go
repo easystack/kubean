@@ -355,7 +355,7 @@ func (c *Controller) FetchGlobalManifestImageTag() string {
 func (c *Controller) NewKubesprayJob(clusterOps *clusteroperationv1alpha1.ClusterOperation, serviceAccountName string) *batchv1.Job {
 	BackoffLimit := int32(0)
 	DefaultMode := int32(0o700)
-	PrivatekeyMode := int32(0o400)
+	PrivatekeyMode := int32(0o600)
 	jobName := c.GenerateJobName(clusterOps)
 	namespace := util.GetCurrentNSOrDefault()
 	job := &batchv1.Job{
@@ -393,8 +393,8 @@ func (c *Controller) NewKubesprayJob(clusterOps *clusteroperationv1alpha1.Cluste
 								},
 								{
 									Name:      "hosts-conf",
-									MountPath: "/conf/hosts.yml",
-									SubPath:   "hosts.yml",
+									MountPath: "/captain/inventory/inventory",
+									SubPath:   "inventory",
 								},
 								{
 									Name:      "vars-conf",
@@ -449,7 +449,6 @@ func (c *Controller) NewKubesprayJob(clusterOps *clusteroperationv1alpha1.Cluste
 					Name:      "ssh-auth",
 					MountPath: "/auth/ssh-privatekey",
 					SubPath:   "ssh-privatekey",
-					ReadOnly:  true,
 				})
 		}
 		job.Spec.Template.Spec.Volumes = append(job.Spec.Template.Spec.Volumes,
@@ -696,7 +695,7 @@ func (c *Controller) injectCustomAction(clusterOps *clusteroperationv1alpha1.Clu
 		}
 	}
 	defaultMode := int32(0o700)
-	pathPrefix := "/kubespray"
+	pathPrefix := "/captain"
 	if actionType == clusteroperationv1alpha1.ShellActionType {
 		pathPrefix = "/bin"
 	}
