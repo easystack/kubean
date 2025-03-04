@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"reflect"
+	"runtime"
 	"sync"
 	"time"
 
@@ -198,10 +199,15 @@ func (c *Controller) UpdateLocalAvailableImage(manifests []manifestv1alpha1.Mani
 		var newImageName string
 		sprayRelease := manifest.ObjectMeta.Annotations[constants.KeySprayRelease]
 		sprayCommit := manifest.ObjectMeta.Annotations[constants.KeySprayCommit]
+		imageProject := "captain"
+		arch := runtime.GOARCH
+		if arch == "arm64" {
+			imageProject = "arm64v8"
+		}
 		if sprayRelease != "" && sprayCommit != "" {
-			newImageName = fmt.Sprintf("%s/kubean-io/spray-job:%s-%s", imageRepo, sprayRelease, sprayCommit)
+			newImageName = fmt.Sprintf("%s/%s/spray-job:%s-%s", imageRepo, imageProject, sprayRelease, sprayCommit)
 		} else {
-			newImageName = fmt.Sprintf("%s/kubean-io/spray-job:%s", imageRepo, manifest.Spec.KubeanVersion)
+			newImageName = fmt.Sprintf("%s/%s/spray-job:%s", imageRepo, imageProject, manifest.Spec.KubeanVersion)
 		}
 		if manifest.Status.LocalAvailable.KubesprayImage != newImageName {
 			manifest.Status.LocalAvailable.KubesprayImage = newImageName
